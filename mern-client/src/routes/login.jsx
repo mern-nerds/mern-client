@@ -11,7 +11,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch('http://localhost:5000/user/json');
+      const res = await fetch('http://localhost:5000/user');
       const users = await res.json();
 
       const foundUser = users.find(

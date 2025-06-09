@@ -1,6 +1,17 @@
-import { RouterProvider } from '@tanstack/react-router'
-import { router } from './router'
+// src/App.jsx
+import { Outlet, Link } from '@tanstack/react-router';
 
-export default function App() {
-  return <RouterProvider router={router} />
+function App() {
+  return (
+    <div>
+      <nav>
+        <Link to="/">Home</Link> | <Link to="/login">Login</Link> |{' '}
+        <Link to="/profile">Profile</Link> | <Link to="/about">About</Link>
+      </nav>
+      <hr />
+      <Outlet />
+    </div>
+  );
 }
+
+export default App; // Make sure this line exists exactly like this

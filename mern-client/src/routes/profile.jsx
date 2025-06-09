@@ -1,20 +1,54 @@
-import { useRouterState } from '@tanstack/react-router';
+import React, { useEffect, useState } from "react";
 
 export default function Profile() {
-  const { location } = useRouterState();
-  const user = location.state?.user;
+  const [user, setUser] = useState(undefined); // undefined = loading
+  const [error, setError] = useState("");
 
-  if (!user) {
-    return <p>No user data found. Please log in 🥭</p>;
-  }
+  useEffect(() => {
+    const storedUser = localStorage.getItem("loggedInUser");
+    if (!storedUser) {
+      setUser(null); // no one logged in
+      return;
+    }
+
+    const parsedUser = JSON.parse(storedUser);
+
+    fetch("http://localhost:5000/user")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch users");
+        return res.json();
+      })
+      .then((allUsers) => {
+        const match = allUsers.find((u) => u.email === parsedUser.email);
+        if (match) {
+          setUser(match);
+        } else {
+          setUser(null); // not found on server anymore
+        }
+      })
+      .catch((err) => {
+        setError("Error fetching profile: " + err.message);
+      });
+  }, []);
+
+  if (user === undefined) return <p>Loading profile...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (user === null) return <p>No user logged in.</p>;
 
   return (
-    <div className="max-w-lg mx-auto mt-8 p-4 border rounded shadow">
-      <h2 className="text-2xl mb-4">User Profile 🥭</h2>
-      <p><strong>Name:</strong> {user.name}</p>
+    <div>
+      <h2>Welcome, {user.name}!</h2>
       <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Password:</strong> {user.password}</p>
-      <p><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</p>
+      <p><strong>Admin:</strong> {user.isAdmin ? "Yes" : "No"}</p>
+
+      <button
+        onClick={() => {
+          localStorage.removeItem("loggedInUser");
+          window.location.href = "/login";
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 }

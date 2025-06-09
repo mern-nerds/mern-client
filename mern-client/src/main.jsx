@@ -1,10 +1,10 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { RouterProvider } from '@tanstack/react-router'
-import { router } from './router'
+// src/main.jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Router from "./router";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+    <Router />
+  </React.StrictMode>
+);

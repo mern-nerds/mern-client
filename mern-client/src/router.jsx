@@ -1,57 +1,54 @@
+import React from "react";
 import {
+  RouterProvider,
   createRouter,
-  createRootRoute,
   createRoute,
-} from '@tanstack/react-router'
-import { Outlet } from '@tanstack/react-router'
-import Home from './routes/home'
-import About from './routes/about'
-import Login from './routes/login'
-import Profile from './routes/profile'
+  createRootRoute,
+} from "@tanstack/react-router";
 
-// Use inline layout instead of Root.jsx
+import App from "./App";
+import Home from "./routes/home";
+import Login from "./routes/login";
+import Profile from "./routes/profile";
+
+// Root route
 const rootRoute = createRootRoute({
-  component: () => (
-    <div className="p-4">
-      <nav className="flex gap-4 mb-4">
-        <a href="/" className="underline">Home</a>
-        <a href="/about" className="underline">About</a>
-        <a href="/login" className="underline">Login</a>
-      </nav>
-      <Outlet />
-    </div>
-  ),
-})
+  component: () => <App />,
+});
 
+// Child routes
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
-  component: Home,
-})
-
-const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/about',
-  component: About,
-})
+  path: "/",
+  component: () => <Home />,
+});
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/login',
-  component: Login,
-})
+  path: "/login",
+  component: () => <Login />,
+});
 
 const profileRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/profile',
-  component: Login,
-})
+  path: "/profile",
+  component: () => <Profile />,
+});
 
+// Route tree
 const routeTree = rootRoute.addChildren([
   homeRoute,
-  aboutRoute,
   loginRoute,
   profileRoute,
-])
+]);
 
-export const router = createRouter({ routeTree })
+// Router
+const router = createRouter({
+  routeTree,
+  defaultPreload: "intent",
+  defaultPendingComponent: () => <div>Loading...</div>,
+});
+
+export default function Router() {
+  return <RouterProvider router={router} />;
+}
